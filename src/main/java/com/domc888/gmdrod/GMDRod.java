@@ -34,7 +34,9 @@ public final class GMDRod implements ModInitializer {
                         .then(Commands.argument("player", EntityArgument.player())
                                 .then(Commands.argument("gamemode", StringArgumentType.word())
                                         .suggests((context, builder) -> SharedSuggestionProvider.suggest(MODES, builder))
-                                        .executes(GMDRod::giveRod)))));
+                                        .executes(context -> giveRod(context, false))
+                                        .then(Commands.literal("fake")
+                                                .executes(context -> giveRod(context, true)))))));
 
         UseItemCallback.EVENT.register((player, level, hand) -> {
             if (!(player instanceof ServerPlayer holder)) {
@@ -49,7 +51,8 @@ public final class GMDRod implements ModInitializer {
         });
     }
 
-    private static int giveRod(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    private static int giveRod(CommandContext<CommandSourceStack> context, boolean fake)
+            throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         ServerPlayer holder = source.getPlayerOrException();
         ServerPlayer target = EntityArgument.getPlayer(context, "player");
@@ -60,13 +63,20 @@ public final class GMDRod implements ModInitializer {
             return 0;
         }
 
-        ItemStack rod = RodData.create(target, modeName);
+        ItemStack rod = fake ? RodData.createFake() : RodData.create(target, modeName);
         if (!holder.getInventory().add(rod)) {
             holder.drop(rod, false, Prediction.SERVER_ONLY);
         }
 
-        String targetName = target.getName().getString();
-        source.sendSuccess(() -> Component.literal("Gave you a GM Rod for " + targetName + " (" + modeName + ")."), false);
+        if (fake) {
+            source.sendSuccess(() -> Component.literal("Gave you a fake GM Rod."), false);
+        } else {
+            String targetName = target.getName().getString();
+            source.sendSuccess(
+                    () -> Component.literal("Gave you a GM Rod for " + targetName + " (" + modeName + ")."),
+                    false
+            );
+        }
         return Command.SINGLE_SUCCESS;
     }
 
@@ -86,6 +96,8 @@ public final class GMDRod implements ModInitializer {
         }
 
         target.setGameMode(RodData.modeOf(binding.modeName()));
-        holder.sendSystemMessage(Component.literal("Set " + binding.targetName() + " to " + binding.modeName() + "."));
+        holder.sendSystemMessage(Component.literal(
+                "Set " + binding.targetName() + " to " + binding.modeName() + "."
+        ));
     }
 }
