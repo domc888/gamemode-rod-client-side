@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "gmdrod",
+  "version": "1.0.0",
+  "name": "GMDRod",
+  "description": "Fishing rod that sets a player's gamemode when you cast and reel in.",
+  "authors": ["domc888"],
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["com.domc888.gmdrod.GMDRod"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
