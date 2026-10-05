@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -61,7 +62,7 @@ public final class GMDRod implements ModInitializer {
 
         ItemStack rod = RodData.create(target, modeName);
         if (!holder.getInventory().add(rod)) {
-            holder.drop(rod, false);
+            holder.drop(rod, false, Prediction.SERVER_ONLY);
         }
 
         String targetName = target.getName().getString();
