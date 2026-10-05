@@ -47,6 +47,13 @@ public final class RodData {
         return stack;
     }
 
+    public static ItemStack createFake() {
+        ItemStack stack = new ItemStack(Items.FISHING_ROD);
+        stack.set(DataComponents.ITEM_NAME, Component.literal("GM Rod"));
+        stack.set(DataComponents.UNBREAKABLE, Unit.INSTANCE);
+        return stack;
+    }
+
     public static Binding read(ItemStack stack) {
         if (!stack.is(Items.FISHING_ROD)) {
             return null;
